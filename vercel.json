@@ -29,7 +29,7 @@
         },
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://gradegauge.vercel.app"
+          "value": "https://gradegauge-theta.vercel.app"
         },
         {
           "key": "Content-Security-Policy",

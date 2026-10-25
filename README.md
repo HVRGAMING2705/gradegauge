@@ -13,6 +13,6 @@ Ridge regression (alpha = 1.0) on standardized features, trained on 500 syntheti
 Open `index.html` — the demo runs entirely in the browser using the exported coefficients in `model.json`. No backend needed.
 
 ## Live
-https://gradegauge.vercel.app
+https://gradegauge-theta.vercel.app
 
 Built by Vikranth Reddy (B.Tech CSE AI&ML, Woxsen University).
