@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GradeGauge — Student Exam Score Predictor | AI/ML Project</title>
+<meta name="description" content="GradeGauge predicts a student's exam score from study hours, attendance, sleep, previous score and assignments completed, using ridge regression trained on 500 synthetic student records. Try the interactive demo in your browser.">
+<link rel="canonical" href="https://gradegauge.vercel.app/">
+<meta property="og:title" content="GradeGauge — Student Exam Score Predictor">
+<meta property="og:description" content="Ridge regression predicts exam scores from 5 study habits. Interactive browser demo, no backend needed.">
+<meta property="og:type" content="website"><meta property="og:url" content="https://gradegauge.vercel.app/">
+<meta name="twitter:card" content="summary"><meta name="twitter:title" content="GradeGauge — Student Exam Score Predictor">
+<meta name="twitter:description" content="Predict exam scores from study habits with ridge regression.">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"GradeGauge","applicationCategory":"EducationalApplication","description":"Student exam score predictor using ridge regression.","author":{"@type":"Person","name":"Vikranth Reddy"}}</script>
+<style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:760px;margin:0 auto;padding:24px;color:#111;line-height:1.6}h1{font-size:2rem}label{display:block;margin:14px 0 4px;font-weight:600}input[type=range]{width:100%}#out{font-size:2.4rem;font-weight:800;margin:16px 0}#bar{height:22px;background:#e5e5e5;border-radius:11px;overflow:hidden}#fill{height:100%;background:#111;width:0%}button{padding:10px 16px;font-size:1rem;cursor:pointer}code{background:#f2f2f2;padding:2px 6px}footer{margin-top:32px;color:#555;font-size:.9rem}</style>
+</head><body>
+<h1>GradeGauge</h1>
+<p><strong>Student exam score predictor.</strong> Move the sliders and GradeGauge predicts the exam score (0–100) with a ridge regression model trained on 500 synthetic student records. Runs entirely in your browser — no backend, no data leaves this page.</p>
+<div id="demo">
+<label>Study hours per day: <span id="v0">6</span></label><input type="range" id="s0" min="0" max="12" step="0.5" value="6">
+<label>Attendance (%): <span id="v1">85</span></label><input type="range" id="s1" min="40" max="100" step="1" value="85">
+<label>Sleep hours per night: <span id="v2">7</span></label><input type="range" id="s2" min="4" max="10" step="0.5" value="7">
+<label>Previous exam score: <span id="v3">70</span></label><input type="range" id="s3" min="0" max="100" step="1" value="70">
+<label>Assignments completed (of 10): <span id="v4">8</span></label><input type="range" id="s4" min="0" max="10" step="1" value="8">
+<div id="out">—</div><div id="bar"><div id="fill"></div></div>
+<p id="note"></p>
+<p><button onclick="preset([2,60,5,40,3])">Low-effort student</button> <button onclick="preset([6,85,7,70,8])">Average student</button> <button onclick="preset([10,95,8,90,10])">Top student</button></p>
+</div>
+<h2>How it works</h2>
+<p>Features are standardized with the training means and standard deviations, then a ridge regression (alpha = 1.0) predicts the score, clipped to 0–100. The strongest drivers are study hours and previous score, followed by attendance.</p>
+<h2>Results</h2>
+<ul><li>5-fold cross-validated R² = <b>0.871</b></li><li>Mean absolute error = <b>4.54 marks</b> (vs 13.94 for predicting the class average — about 3× better)</li><li>RMSE = 5.81 marks on 500 synthetic records</li></ul>
+<p><em>Educational demo:</em> predictions are estimates from synthetic training data, not a guarantee of any real exam result. Study habits matter — but so do revision quality, health and exam conditions.</p>
+<footer>Built by Vikranth Reddy (B.Tech CSE AI&amp;ML, Woxsen University) · <a href="https://github.com/HVRGAMING2705/gradegauge">GitHub</a></footer>
+<script>const MODEL={"features": ["study_hours", "attendance_pct", "sleep_hours", "prev_score", "assignments_done"], "means": [5.948176054504694, 69.92046035088842, 7.027447958413382, 51.2416537411476, 4.748], "stds": [3.437827260759254, 17.778223960415648, 1.7473813364176902, 28.709775309855722, 3.138868585971703], "coef": [9.403017531041353, 5.393533203111956, 3.020338294554996, 9.622216884436455, 4.399697279106532], "intercept": 80.92192391154202, "metrics": {"cv_mae": 4.54378266563678, "cv_rmse": 5.812639766000173, "cv_r2": 0.8711408646836907, "baseline_mae": 13.935121706443494, "n": 500}};
+function predict(v){let s=MODEL.intercept;for(let i=0;i<5;i++)s+=MODEL.coef[i]*(v[i]-MODEL.means[i])/MODEL.stds[i];return Math.max(0,Math.min(100,s));}
+function update(){const v=[0,1,2,3,4].map(i=>parseFloat(document.getElementById('s'+i).value));v.forEach((x,i)=>document.getElementById('v'+i).textContent=x);const p=predict(v);document.getElementById('out').textContent=p.toFixed(1)+' / 100';document.getElementById('fill').style.width=p+'%';document.getElementById('note').textContent=p>=85?'Excellent — on track for a top grade.':p>=70?'Good — solid pass, push study hours a little higher.':p>=50?'Passing range — attendance and revision need work.':'At risk — increase study hours and attendance first.';}
+function preset(v){v.forEach((x,i)=>document.getElementById('s'+i).value=x);update();}
+document.querySelectorAll('input[type=range]').forEach(e=>e.addEventListener('input',update));update();</script>
+</body></html>
